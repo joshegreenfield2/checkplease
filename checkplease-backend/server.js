@@ -76,7 +76,7 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
 
   if (error) {
     fastify.log.error('Error inserting transaction into Supabase:', error);
-    return reply.code(500).send({ error: 'Database error' });
+    return reply.code(500).send({ error: 'Database error', message: error.message });
   }
 
   fastify.log.info('✅ Transaction processed and saved to Supabase:', data[0]);
