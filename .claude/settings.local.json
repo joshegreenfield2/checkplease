@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run dev)",
+      "Bash(curl:*)",
+      "Bash(brew install:*)",
+      "Bash(npx create-expo-app@latest checkplease-app --template blank)",
+      "Bash(npm run ios:*)",
+      "Bash(npx expo start:*)",
+      "Bash(npx expo install react-dom react-native-web)",
+      "Bash(python3:*)",
+      "Bash(npm install:*)",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(npx expo:*)",
+      "Bash(pkill:*)",
+      "Bash(npx eslint:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

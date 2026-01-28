@@ -1,0 +1,19 @@
+{
+  "name": "checkplease-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Check Please - receives transaction webhooks from Make.com",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@supabase/supabase-js": "^2.93.2",
+    "dotenv": "^16.4.1",
+    "fastify": "^4.26.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
