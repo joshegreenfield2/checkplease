@@ -22,9 +22,9 @@ fastify.get('/', async (request, reply) => {
     name: 'Check Please API',
     endpoints: {
       'GET /health': 'Health check',
-      'POST /webhooks/transaction?userId=xxx': 'Receive transaction from Make.com',
-      'GET /transactions': 'Get all transactions (Auth required)',
-      'GET /transactions/latest': 'Get latest transaction (Auth required)'
+      'POST /webhooks/transaction': 'Receive transaction from Make.com',
+      'GET /transactions': 'Get all transactions',
+      'GET /transactions/latest': 'Get latest transaction'
     }
   };
 });
@@ -50,11 +50,6 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
 
   // 3. Extract transaction data
   const { amount, merchant, timestamp } = request.body;
-  const userId = request.query.userId;
-
-  if (!userId) {
-    return reply.code(400).send({ error: 'Missing userId query parameter' });
-  }
 
   // 4. Validate required fields
   if (!amount || !merchant) {
@@ -67,8 +62,7 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
   const transaction = {
     amount: parseFloat(amount),
     merchant: merchant,
-    timestamp: timestamp || new Date().toISOString(),
-    user_id: userId
+    timestamp: timestamp || new Date().toISOString()
   };
 
   // 6. Store transaction in Supabase
@@ -94,20 +88,9 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
 
 // Endpoint for app to fetch all transactions
 fastify.get('/transactions', async (request, reply) => {
-  const authHeader = request.headers.authorization;
-  if (!authHeader) return reply.code(401).send({ error: 'Missing Authorization header' });
-
-  const token = authHeader.replace('Bearer ', '');
-  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-  if (authError || !user) {
-    return reply.code(401).send({ error: 'Invalid token' });
-  }
-
   const { data, error } = await supabase
     .from('transactions')
     .select('*')
-    .eq('user_id', user.id)
     .order('timestamp', { ascending: false });
 
   if (error) {
@@ -120,20 +103,9 @@ fastify.get('/transactions', async (request, reply) => {
 
 // Endpoint for app to fetch latest transaction
 fastify.get('/transactions/latest', async (request, reply) => {
-  const authHeader = request.headers.authorization;
-  if (!authHeader) return reply.code(401).send({ error: 'Missing Authorization header' });
-
-  const token = authHeader.replace('Bearer ', '');
-  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-  if (authError || !user) {
-    return reply.code(401).send({ error: 'Invalid token' });
-  }
-
   const { data, error } = await supabase
     .from('transactions')
     .select('*')
-    .eq('user_id', user.id)
     .order('timestamp', { ascending: false })
     .limit(1);
 

@@ -22,13 +22,10 @@ import {
 } from 'react-native-gesture-handler';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import { supabase } from './supabase';
-import Auth from './Auth';
 
 const API_URL = 'https://checkplease-production.up.railway.app';
 
 export default function App() {
-  const [session, setSession] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
@@ -72,13 +69,9 @@ export default function App() {
   const swipeableRefs = useRef({});
 
   const fetchTransactions = async () => {
-    if (!session?.access_token) return;
     try {
       const response = await fetch(`${API_URL}/transactions`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
+        headers: { 'ngrok-skip-browser-warning': 'true' },
       });
       const data = await response.json();
       // Filter out locally deleted transactions using ref (not stale closure)
@@ -91,21 +84,10 @@ export default function App() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!session) return;
     fetchTransactions();
     const interval = setInterval(fetchTransactions, 5000);
     return () => clearInterval(interval);
-  }, [session]);
+  }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -1172,26 +1154,8 @@ export default function App() {
           </SafeAreaView>
         </Modal>
       </SafeAreaView>
-      {/* Sign Out Button (Optional/Temporary) */}
-      <TouchableOpacity
-        style={styles.signOutButton}
-        onPress={() => supabase.auth.signOut()}
-      >
-        <Text style={styles.signOutText}>Sign Out ({session?.user?.email})</Text>
-      </TouchableOpacity>
     </GestureHandlerRootView>
   );
-
-  // If no session, show Auth screen
-  if (!session) {
-    return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Auth />
-      </GestureHandlerRootView>
-    );
-  }
-
-  return MainApp;
 }
 
 const styles = StyleSheet.create({
@@ -1318,6 +1282,4 @@ const styles = StyleSheet.create({
   lockButtonTextUnlocked: { fontSize: 18, opacity: 0.35 },
   resetEvenButton: { backgroundColor: '#f0f0f0', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 16, marginTop: 8 },
   resetEvenButtonText: { color: '#666', fontSize: 14, fontWeight: '500' },
-  signOutButton: { margin: 20, padding: 15, backgroundColor: '#f0f0f0', borderRadius: 10, alignItems: 'center' },
-  signOutText: { color: '#666', fontSize: 14, fontWeight: '500' },
 });
