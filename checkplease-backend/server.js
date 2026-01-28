@@ -62,8 +62,7 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
   const transaction = {
     amount: parseFloat(amount),
     merchant: merchant,
-    timestamp: timestamp || new Date().toISOString(),
-    receivedAt: new Date().toISOString()
+    timestamp: timestamp || new Date().toISOString()
   };
 
   // 6. Store transaction in Supabase
