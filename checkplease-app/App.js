@@ -1177,7 +1177,7 @@ export default function App() {
         style={styles.signOutButton}
         onPress={() => supabase.auth.signOut()}
       >
-        <Text style={styles.signOutText}>Sign Out ({session.user.email})</Text>
+        <Text style={styles.signOutText}>Sign Out ({session?.user?.email})</Text>
       </TouchableOpacity>
     </GestureHandlerRootView>
   );
