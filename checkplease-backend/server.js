@@ -49,7 +49,7 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
   fastify.log.info(JSON.stringify(request.body, null, 2));
 
   // 3. Extract transaction data
-  const { amount, merchant, timestamp, cardLast4, rawEmail } = request.body;
+  const { amount, merchant, timestamp } = request.body;
 
   // 4. Validate required fields
   if (!amount || !merchant) {
@@ -63,8 +63,6 @@ fastify.post('/webhooks/transaction', async (request, reply) => {
     amount: parseFloat(amount),
     merchant: merchant,
     timestamp: timestamp || new Date().toISOString(),
-    cardLast4: cardLast4 || 'xxxx',
-    rawEmail: rawEmail || null,
     receivedAt: new Date().toISOString()
   };
 
