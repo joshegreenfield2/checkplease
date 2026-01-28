@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@supabase/supabase-js": "^2.93.2",
     "expo": "~54.0.32",
     "expo-contacts": "~15.0.11",
     "expo-sms": "~14.0.8",
@@ -18,7 +20,11 @@
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-reanimated": "~4.1.1",
+    "react-native-url-polyfill": "^3.0.0",
     "react-native-web": "^0.21.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@expo/ngrok": "^4.1.3"
+  }
 }
